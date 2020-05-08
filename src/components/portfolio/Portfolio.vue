@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <router-view></router-view>
+        <app-stock v-for="stock in stocks" :stock="stock" v-bind:key="stock.id" ></app-stock>
 
     </div>
 
@@ -10,14 +10,17 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
+    import Stock from './Stock.vue';
+
     export default {
-        methods: {
-            navigateToHome() {
-                this.$router.push({ name: 'homes' });
-            },
-            navigateToUser() {
-                this.$router.push('/user');
-            }
+        computed: {
+            ...mapGetters({
+                stocks: 'stockPortfolio'
+            })
+        },
+        components: {
+            appStock: Stock
         }
     }
 </script>

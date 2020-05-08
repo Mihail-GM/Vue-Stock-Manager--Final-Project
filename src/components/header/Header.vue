@@ -13,7 +13,7 @@
         <router-link to="/portfolio" class="nav-link" tag="li" active-class="active" ><a>Portfolio </a> </router-link>
   
    
-        <router-link to="/stock" class="nav-link" tag="li" active-class="active" ><a>Stocks </a> </router-link>
+        <router-link to="/stocks" class="nav-link" tag="li" active-class="active" ><a>Stocks </a> </router-link>
  
 
 
@@ -21,7 +21,7 @@
     <div class="my-3 my-lg-0">
          <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-          <a  @click="changePrice" class="nav-link" tag="li" active-class="active">End Day </a> 
+          <a  @click="endDay" class="nav-link" tag="li" active-class="active">End Day </a> 
       </li>
 
       <li class="nav-item dropdown">
@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
 import {mapActions} from 'vuex';
 import axios from 'axios'
 
@@ -64,19 +63,33 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'changePrice',
-      'saveData',
-      'loadData'
-    ])
+    ...mapActions({
+                randomizeStocks: 'randomizeStocks',
+                fetchData: 'loadData'
+           
+    }),
+    endDay() {
+      this.randomizeStocks();
+    },
+    saveData() {
+          const data = {
+                    funds: this.$store.getters.funds,
+                    stockPortfolio: this.$store.getters.stockPortfolio,
+                    stocks: this.$store.getters.stocks
+          }; 
 
+           axios.put('/saves.json', data)
+            .then(res => console.log(res))
+            .catch(error => console.log(error))
+    },
+    loadData() {
+       this.fetchData();
+    }
   
   },
   computed: {
-
-
     showMoney() {
-        return this.$store.getters.showMeTheMoney;
+       return this.$store.getters.funds;
     }
   }
 }
